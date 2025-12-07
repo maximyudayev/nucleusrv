@@ -5,6 +5,7 @@ import chisel3.util.MuxLookup
 import FBitPats._
 
 class Execute(
+  A: Boolean,
   F: Boolean,
   M: Boolean = false,
   TRACE: Boolean
@@ -42,6 +43,13 @@ class Execute(
     val is_f_i = if (F) Some(Input(Bool())) else None
     val is_f_o = if (F) Some(Output(Bool())) else None
     val exceptions = if (F) Some(Output(Vec(5, Bool()))) else None
+
+    val isAMO = if (A) Some(Input(Bool())) else None
+    val isLR = if (A) Some(Input(Bool())) else None
+    val isSC = if (A) Some(Input(Bool())) else None
+    val amoOp = if (A) Some(Input(UInt(4.W))) else None
+    val atomic_mem_rdata = if (A) Some(Input(UInt(32.W))) else None
+    val amo_stall = if (A) Some(Input(Bool())) else None
   })
 
   val alu = Module(new ALU)
@@ -103,6 +111,13 @@ class Execute(
 
   //io.ALUresult := alu.io.result
   //dontTouch(io.stall) := false.B
+
+  val amoALU = if (A) Some(Module(new AMOALU)) else None
+  if (A) {
+    amoALU.get.io.memData := Mux(io.isAMO.get, io.atomic_mem_rdata.get, 0.U)
+    amoALU.get.io.src2 := inputMux2
+    amoALU.get.io.amoOp := io.amoOp.get
+  }
 
   val mdu = if (M) Some(Module (new MDU)) else None
   val src_a_reg = if (M) Some(RegInit(0.U(32.W))) else None
@@ -236,7 +251,11 @@ class Execute(
     io.is_f_o.get := io.is_f_i.get | RegNext(f_stall.get)
   }
 
-  io.ALUresult := MuxCase(alu.io.result, (
+  io.ALUresult := MuxCase(alu.io.result,
+   (if (A) Vector(
+      (io.isAMO.get) -> amoALU.get.io.result
+    ) else Vector()
+  ) ++ (
     if (M) Vector(
       (div_en.get && f7_reg.get === 1.U && mdu.get.io.ready) -> Mux(mdu.get.io.output.valid, mdu.get.io.output.bits, 0.U),
       (io.func7 === 1.U && mdu.get.io.ready) -> Mux(mdu.get.io.output.valid, mdu.get.io.output.bits, 0.U)
@@ -255,6 +274,8 @@ class Execute(
     else false.B
   ) || (
     if (F) f_stall.get else false.B
+  ) || (
+    if (A) io.amo_stall.get else false.B
   )
 
   io.writeData := inputMux2

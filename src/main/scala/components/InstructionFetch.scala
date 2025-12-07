@@ -32,7 +32,10 @@ class InstructionFetch extends Module {
 
   io.coreInstrReq.bits.addrRequest := Mux(
     io.coreInstrReq.ready,
-    Cat("b00".U, io.address(31, 2)),
+    // landh: Conversion from byte-addressing to word-addressing is moved to SRamTop module
+    // so this module would keep the address request unchanged
+    io.address,
+    // Cat("b00".U, io.address(31, 2)),
     DontCare
   )
   io.coreInstrReq.valid := (state_reg === 1.U) & !io.stall

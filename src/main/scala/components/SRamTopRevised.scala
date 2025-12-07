@@ -52,7 +52,11 @@ class SRamTop(val programFile:Option[String] ) extends Module {
             when(io.req.valid) {
                 sram.io.csb_i   := false.B // Chip select ON
                 sram.io.we_i    := !io.req.bits.isWrite
+                // crucial: we're converting from byte addressing (+4 for each word)
+                // to word addressing (+1 for each word) in this SRamTop module
                 sram.io.addr_i  := io.req.bits.addrRequest >> 2
+                // val addrReq = io.req.bits.addrRequest.asUInt
+                // printf("SRAM: Accessing memory index 0x%x\n", sram.io.addr_i)
                 sram.io.wmask_i := io.req.bits.activeByteLane
                 sram.io.wdata_i := io.req.bits.dataRequest
 

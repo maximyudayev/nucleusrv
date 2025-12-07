@@ -10,7 +10,10 @@ class PC extends Module{
     val pc2 = Output(SInt(32.W))
   })
 
-  val pc_reg = RegInit((0x0-0x4).asSInt(32.W))
+  // landh: fix the PC intialization value to 0x0
+  // since the IF fetches instruction from the current PC, not the npc
+  val pc_reg = RegInit((0x0).asSInt(32.W))
+  // val pc_reg = RegInit((0x0-0x4).asSInt(32.W))
   pc_reg := io.in
   io.out := pc_reg
   io.pc4 := Mux(io.halt, pc_reg, pc_reg + 4.S)

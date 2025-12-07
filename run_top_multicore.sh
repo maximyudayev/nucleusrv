@@ -18,6 +18,8 @@ verilator \
     --exe \
     --build \
     --trace \
+    -DPRINTF_COND=1 \
+    -CFLAGS '-DVL_DEBUG -ggdb' \
     -Wno-fatal \
     -Wno-lint \
     -Wno-style \

@@ -1,21 +1,22 @@
 [*]
 [*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Fri Nov 14 14:35:31 2025
+[*] Sun Nov 23 11:06:06 2025
 [*]
 [dumpfile] "/home/landh/data/prj-lfx-mentorship/nucleusrv/out/nucleusrv.components.NRVDriver/logs/top.vcd"
-[dumpfile_mtime] "Fri Nov 14 14:27:57 2025"
-[dumpfile_size] 1839555
+[dumpfile_mtime] "Sun Nov 23 10:59:06 2025"
+[dumpfile_size] 608819
 [savefile] "/home/landh/data/prj-lfx-mentorship/nucleusrv/wave_nrvdriver_2core.gtkw"
 [timestart] 0
 [size] 1908 1107
-[pos] 32767 32767
-*-4.000000 41 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] 65503 65503
+*-4.000000 11 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.Top.
+[treeopen] TOP.Top.CoreTile_1.
 [treeopen] TOP.Top.imem.
 [treeopen] TOP.Top.imem.sram.
 [sst_width] 350
-[signals_width] 533
+[signals_width] 586
 [sst_expanded] 1
 [sst_vpaned_height] 330
 @28
@@ -48,7 +49,7 @@ TOP.io_rvfi_0_valid_0
 -io_rvfi_0
 @200
 -
-@c00200
+@800200
 -io_rvfi_1
 @22
 TOP.io_rvfi_1_insn_0[31:0]
@@ -69,10 +70,66 @@ TOP.io_rvfi_1_rs2_addr_0[4:0]
 TOP.io_rvfi_1_rs2_rdata_0[31:0]
 @28
 TOP.io_rvfi_1_valid_0
-@1401200
+@1000200
 -io_rvfi_1
 @200
 -
+@22
+TOP.Top.CoreTile_1.core.if_reg_pc[31:0]
+TOP.Top.CoreTile_1.core.id_reg_pc[31:0]
+TOP.Top.CoreTile_1.core.ex_reg_pc[31:0]
+TOP.Top.CoreTile_1.core.mem_reg_pc[31:0]
+TOP.Top.CoreTile_1.core.npc[31:0]
+@28
+TOP.Top.CoreTile_1.core.pc_io_halt
+@22
+TOP.Top.CoreTile_1.core.pc_io_in[31:0]
+TOP.Top.CoreTile_1.core.pc_io_out[31:0]
+@200
+-
+@22
+TOP.Top.CoreTile_1.core.if_reg_ins[31:0]
+TOP.Top.CoreTile_1.core.id_reg_ins[31:0]
+TOP.Top.CoreTile_1.core.ex_reg_ins[31:0]
+TOP.Top.CoreTile_1.core.mem_reg_ins[31:0]
+@28
+TOP.Top.CoreTile_1.core.InstructionFetch_io_stall
+TOP.Top.CoreTile_1.core.InstructionFetch_io_coreInstrReq_valid
+@22
+TOP.Top.CoreTile_1.core.InstructionFetch_io_address[31:0]
+@28
+TOP.Top.CoreTile_1.core.InstructionFetch_io_coreInstrResp_valid
+TOP.Top.CoreTile_1.core.InstructionFetch_io_coreInstrResp_ready
+@22
+TOP.Top.CoreTile_1.core.InstructionFetch_io_coreInstrResp_bits_dataResponse[31:0]
+TOP.Top.CoreTile_1.core.instruction[31:0]
+TOP.Top.CoreTile_1.core.ex_reg_result[31:0]
+TOP.Top.CoreTile_1.core.MEM_io_aluResultIn[31:0]
+TOP.Top.CoreTile_1.core.MEM_io_dccmReq_bits_addrRequest[31:0]
+TOP.Top.CoreTile_1.core.MEM_io_dccmReq_bits_dataRequest[31:0]
+@28
+TOP.Top.CoreTile_1.core.MEM_io_dccmReq_bits_isWrite
+TOP.Top.CoreTile_1.core.MEM_io_dccmReq_valid
+@200
+-
+@28
+TOP.Top.CoreTile_1.core.InstructionDecode_io_hdu_pcWrite
+TOP.Top.CoreTile_1.core.InstructionDecode_io_hdu_if_reg_write
+TOP.Top.CoreTile_1.core.InstructionDecode_io_hdu_id_ex_write
+TOP.Top.CoreTile_1.core.InstructionDecode_io_hdu_ex_mem_write
+TOP.Top.CoreTile_1.core.InstructionDecode_io_hdu_mem_wb_write
+@200
+-
+@28
+TOP.Top.CoreTile_1.core.amo_stall
+TOP.Top.CoreTile_1.core.amo_is_active
+TOP.Top.CoreTile_1.core.id_reg_isAMO
+TOP.Top.CoreTile_1.core.ex_reg_isAMO
+@24
+TOP.Top.CoreTile_1.core.amo_state[1:0]
+@22
+TOP.Top.CoreTile_1.core.amo_read_data[31:0]
+TOP.Top.CoreTile_1.core.amo_modified_data[31:0]
 @c00200
 -CoreTile0
 @22
@@ -99,29 +156,45 @@ TOP.Top.CoreTile_io_iCacheBusRsp_valid
 -CoreTile0
 @200
 -
-@800201
+@800200
 -CoreTile1
-@23
+@28
+TOP.Top.CoreTile_1.iCache_io_cpuReq_valid
+@22
+TOP.Top.CoreTile_1.iCache_io_cpuReq_bits_addrRequest[31:0]
+@28
+TOP.Top.CoreTile_1.iCache_io_cpuRsp_valid
+TOP.Top.CoreTile_1.iCache_io_cpuRsp_ready
+@22
+TOP.Top.CoreTile_1.iCache_io_cpuRsp_bits_dataResponse[31:0]
+@200
+-
+@22
+TOP.Top.CoreTile_1.iCache_io_memReq_bits_addrRequest[31:0]
+@28
+TOP.Top.CoreTile_1.iCache_io_memReq_valid
+TOP.Top.CoreTile_1.iCache_io_memReq_ready
+@22
+TOP.Top.CoreTile_1.iCache_io_memRsp_bits_dataResponse[31:0]
+@28
+TOP.Top.CoreTile_1.iCache_io_memRsp_valid
+TOP.Top.CoreTile_1.iCache_io_memRsp_ready
+@24
+TOP.Top.CoreTile_1.iCache.state[2:0]
+@200
+-
+@22
 TOP.Top.CoreTile_1_io_dCacheBusReq_bits_addrRequest[31:0]
 TOP.Top.CoreTile_1_io_dCacheBusReq_bits_dataRequest[31:0]
-@29
+@28
 TOP.Top.CoreTile_1_io_dCacheBusReq_bits_isWrite
 TOP.Top.CoreTile_1_io_dCacheBusReq_ready
 TOP.Top.CoreTile_1_io_dCacheBusReq_valid
-@23
+@22
 TOP.Top.CoreTile_1_io_dCacheBusRsp_bits_dataResponse[31:0]
-@29
+@28
 TOP.Top.CoreTile_1_io_dCacheBusRsp_valid
-@23
-TOP.Top.CoreTile_1_io_iCacheBusReq_bits_addrRequest[31:0]
-@29
-TOP.Top.CoreTile_1_io_iCacheBusReq_ready
-TOP.Top.CoreTile_1_io_iCacheBusReq_valid
-@23
-TOP.Top.CoreTile_1_io_iCacheBusRsp_bits_dataResponse[31:0]
-@29
-TOP.Top.CoreTile_1_io_iCacheBusRsp_valid
-@1000201
+@1000200
 -CoreTile1
 @200
 -
@@ -143,7 +216,27 @@ TOP.Top.imem.io_rsp_valid
 -imem
 @200
 -
-@800200
+@28
+TOP.Top.imem.sram.csb_i
+TOP.Top.imem.sram.csb
+@22
+TOP.Top.imem.sram.addr_i[27:0]
+@23
+TOP.Top.imem.sram.addr_o[12:0]
+@28
+TOP.Top.imem.sram.rvalid
+@22
+TOP.Top.imem.sram.rdata_i[31:0]
+TOP.Top.imem.sram.rdata_o[31:0]
+@28
+TOP.Top.imem.sram.we_i
+@22
+TOP.Top.imem.sram.wdata_i[31:0]
+@28
+TOP.Top.imem.sram.we_o
+@200
+-
+@c00200
 -dmem
 @22
 TOP.Top.dmem.io_req_bits_addrRequest[31:0]
@@ -157,7 +250,7 @@ TOP.Top.dmem.io_rsp_bits_dataResponse[31:0]
 @28
 TOP.Top.dmem.io_rsp_ready
 TOP.Top.dmem.io_rsp_valid
-@1000200
+@1401200
 -dmem
 [pattern_trace] 1
 [pattern_trace] 0

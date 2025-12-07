@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 
 class InstructionDecode(
+  A: Boolean,
   F: Boolean,
   Zicsr: Boolean,
   TRACE: Boolean
@@ -17,6 +18,8 @@ class InstructionDecode(
     val id_ex_mem_read = Input(Bool())
 //    val ex_mem_mem_write = Input(Bool())
     val ex_mem_mem_read = Input(Bool())
+    // landh: add imem_resp_valid to hazard unit to stall pipeline until icache returns instruction
+    val imem_resp_valid = Input(Bool())
     val dmem_resp_valid = Input(Bool())
     val id_ex_rd = Input(UInt(5.W))
     val ex_mem_rd = Input(UInt(5.W))
@@ -59,6 +62,10 @@ class InstructionDecode(
     val ctl_aluSrc1 = Output(UInt(2.W))
     val hdu_pcWrite = Output(Bool())
     val hdu_if_reg_write = Output(Bool())
+    // landh: add Hazard Unit outputs to control pipeline registers
+    val hdu_id_reg_write = Output(Bool())
+    val hdu_ex_reg_write = Output(Bool())
+    // val hdu_mem_wb_write = Output(Bool())
     val pcSrc = Output(Bool())
     val pcPlusOffset = Output(UInt(32.W))
     val ifid_flush = Output(Bool())
@@ -85,25 +92,27 @@ class InstructionDecode(
     val rd_wdata = if (TRACE) Some(Output(UInt(32.W))) else None
 
     // Atomic Outputpins
-    val isAMO  = Output(Bool())
-    val isLR   = Output(Bool())
-    val isSC   = Output(Bool())
-    val amoOp  = Output(UInt(4.W))
-    val aq   = Output(Bool())
-    val rl   = Output(Bool())
+    val isAMO  = if (A) Some(Output(Bool())) else None
+    val isLR   = if (A) Some(Output(Bool())) else None
+    val isSC   = if (A) Some(Output(Bool())) else None
+    val amoOp  = if (A) Some(Output(UInt(4.W))) else None
+    val aq   = if (A) Some(Output(Bool())) else None
+    val rl   = if (A) Some(Output(Bool())) else None
   })
 
   //atomic instruction detection
   
-  val atomicDecoder = Module(new AtomicDecoder)
-  atomicDecoder.io.instr := io.id_instruction 
+  val atomicDecoder = if (A) Some(Module(new AtomicDecoder)) else None
+  if (A) {
+    atomicDecoder.get.io.instr := io.id_instruction 
 
-  io.isAMO := atomicDecoder.io.out.isAMO
-  io.isLR  := atomicDecoder.io.out.isLR
-  io.isSC  := atomicDecoder.io.out.isSC
-  io.amoOp := atomicDecoder.io.out.amoOp
-  io.aq    := atomicDecoder.io.out.aq
-  io.rl    := atomicDecoder.io.out.rl
+    io.isAMO.get := atomicDecoder.get.io.out.isAMO
+    io.isLR.get  := atomicDecoder.get.io.out.isLR
+    io.isSC.get  := atomicDecoder.get.io.out.isSC
+    io.amoOp.get := atomicDecoder.get.io.out.amoOp
+    io.aq.get    := atomicDecoder.get.io.out.aq
+    io.rl.get    := atomicDecoder.get.io.out.rl
+  }
 
   val is_f = if (F) Some(WireInit(0.B)) else None
   if (F) {
@@ -157,6 +166,8 @@ class InstructionDecode(
 
   //Hazard Detection Unit
   val hdu = Module(new HazardUnit)
+  // landh: add imem_resp_valid to hazard unit to stall pipeline until icache returns instruction
+  hdu.io.imem_resp_valid := io.imem_resp_valid
   hdu.io.dmem_resp_valid := io.dmem_resp_valid
   hdu.io.id_ex_memRead := io.id_ex_mem_read
   hdu.io.ex_mem_memRead := io.ex_mem_mem_read
@@ -167,8 +178,12 @@ class InstructionDecode(
   hdu.io.id_rs2 := io.id_instruction(24, 20)
   hdu.io.jump := io.ctl_jump
   hdu.io.branch := io.ctl_branch
+  hdu.io.ex_stall := io.ex_stall
   io.hdu_pcWrite := hdu.io.pc_write
   io.hdu_if_reg_write := hdu.io.if_reg_write
+  io.hdu_id_reg_write := hdu.io.id_reg_write
+  io.hdu_ex_reg_write := hdu.io.ex_reg_write
+  // io.hdu_mem_wb_write := hdu.io.mem_wb_write
 
   //Control Unit
   val control = Module(new Control(F))

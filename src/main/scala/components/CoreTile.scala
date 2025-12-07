@@ -27,6 +27,7 @@ class CoreTile(
   })
     implicit val config:Configs = Configs(
         XLEN = 32,
+        // A = true,
         M = true,
         F = true,
         C = false,
